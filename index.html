@@ -1,0 +1,173 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <link rel="stylesheet" href="style.css">
+
+    <title>Мир Кино</title>
+  </head>
+  <body class="bg-light">
+    <div class="container d-flex flex-column shadow-sm bg-white" id="main_part">
+      <header>
+        <nav class="navbar navbar-expand-lg navbar-light bg-light">
+          <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+          </button>
+
+          <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav mr-auto">
+              <li class="nav-item">
+                <button id="add-new" class="btn btn-outline-primary" type="button">Добавить новый</button>
+              </li>
+              <li class="nav-item active">
+                <a class="nav-link all-movies" href="#list" id="all-movies">Все фильмы</a>
+              </li>
+            </ul>
+            <form id="search" class="form-inline my-2 my-lg-0">
+              <input class="form-control mr-sm-2" type="search" name="query" placeholder="Поиск..." aria-label="Search" id="search-input">
+              <button class="search btn btn-outline-success my-2 my-sm-0" type="submit"><svg class="octicon octicon-search" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true"><path fill-rule="evenodd" d="M15.7 13.3l-3.81-3.83A5.93 5.93 0 0 0 13 6c0-3.31-2.69-6-6-6S1 2.69 1 6s2.69 6 6 6c1.3 0 2.48-.41 3.47-1.11l3.83 3.81c.19.2.45.3.7.3.25 0 .52-.09.7-.3a.996.996 0 0 0 0-1.41v.01zM7 10.7c-2.59 0-4.7-2.11-4.7-4.7 0-2.59 2.11-4.7 4.7-4.7 2.59 0 4.7 2.11 4.7 4.7 0 2.59-2.11 4.7-4.7 4.7z"></path></svg></button>
+            </form>
+          </div>
+        </nav>
+      </header>
+      <main id="content" class="d-flex flex-wrap justify-content-around align-items-start align-content-start">
+        <h1 class="mt-5 text-center text-uppercase">Добро пожаловать<br> на портал Мир Кино!</h1>
+      </main>
+      <footer class="text-center my-5">
+        <h6 class="mb-0">Мир Кино | © 2019</h6>
+      </footer>
+    </div>
+    
+    
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/lodash@4.17.11/lodash.min.js"></script>
+    <script type="text/template" id="modalTemplate">
+      <div class="modal fade" id="modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">  
+        <div class="modal-dialog modal-lg" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title">Редактировать фильм</h5>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                      <span aria-hidden="true" id="close">&times;</span>
+              </button>
+            </div>
+            <div class="modal-body">
+              <form class="w-75 mx-auto <%-movie.id%>" id="form">
+                <div class="form-group">
+                  <label>Название фильма:</label>
+                  <input type="text" class="form-control" id="film-name" required value="<%-movie.name%>">
+                </div>
+                <div class="form-group">
+                  <label>Оригинальное название фильма:</label>
+                  <input type="text" class="form-control" id="original-film-name" required value="<%-movie.originalFilmName%>">
+                </div>
+                <div class="input-group mb-3">
+                  <div class="input-group-prepend">
+                    <span class="input-group-text" id="upload-poster-addon">Постер</span>
+                  </div>
+                  <div class="custom-file">
+                    <input type="file" class="custom-file-input" id="upload-poster" aria-describedby="upload-poster-addon">
+                    <label class="custom-file-label" for="upload-poster">Выберите файл</label>
+                  </div>
+                </div>
+                <fieldset class="form-group" id="detail">
+                  <legend class="col-form-label pt-0">Детальная информация:</legend>
+                  <div class="form-group row">
+                    <label class="col-sm-2 col-form-label">Год:</label>
+                    <div class="col-sm-10">
+                      <input type="text" class="form-control" id="year" required value="<%-movie.year%>">
+                    </div>
+                  </div>
+                  <div class="form-group row">
+                     <label class="col-sm-2 col-form-label">Страна:</label>
+                    <div class="col-sm-10">
+                      <input type="text" class="form-control" id="country" required value="<%-movie.country%>">
+                    </div>
+                  </div>
+                  <div class="form-group row">
+                    <label class="col-sm-2 col-form-label">Слоган:</label>
+                    <div class="col-sm-10">
+                      <input type="text" class="form-control" id="tagline" required value="<%-movie.tagline%>">
+                    </div>
+                  </div>
+                  <div class="form-group row">
+                    <label class="col-sm-2 col-form-label">Режиссер:</label>
+                    <div class="col-sm-8">
+                      <input type="text" class="form-control" id="director" required value="<%-movie.director%>">
+                    </div>
+                    <div class="col-sm-2">
+                      <button class="btn btn-primary btn-add-field" type="button" id="btn-add"><svg class="octicon octicon-plus" viewBox="0 0 12 16" version="1.1" width="12" height="16" aria-hidden="true"><path fill-rule="evenodd" d="M12 9H7v5H5V9H0V7h5V2h2v5h5v2z"></path></svg></button>
+                    </div>
+                  </div>
+
+                  <% for (let key in movie.positions) {
+                    if (movie.positions[key] !== movie.positions.id) {%>
+
+                    <div class="form-group row">
+                      <div class="col-sm-5">
+                        <input type="text" class="form-control employee-position" placeholder="Должность" required value="<%-movie.positions[key]%>">
+                      </div>
+                      <div class="col-sm-5">
+                        <input type="text" class="form-control employee-name" placeholder="Имя" required value="<%-movie.names[key]%>">
+                      </div>
+                      <div class="col-sm-2">
+                        <button class="btn btn-danger btn-sm btn-remove-field" type="button" id="btn-delete"><svg class="octicon octicon-x" viewBox="0 0 14 18" version="1.1" width="14" height="18" aria-hidden="true"><path fill-rule="evenodd" d="M7.48 8l3.75 3.75-1.48 1.48L6 9.48l-3.75 3.75-1.48-1.48L4.52 8 .77 4.25l1.48-1.48L6 6.52l3.75-3.75 1.48 1.48L7.48 8z"></path></svg></button>
+                      </div>
+                    </div>
+                  <%}}%>
+                          
+                </fieldset>
+                  <div class="form-group">
+                    <label>В ролях:</label>
+                    <textarea class="form-control" rows="3" id="actors"><%-movie.actors%></textarea>
+                    <small class="form-text text-muted">Укажите актеров через запятую.</small>
+                  </div>
+                  <div class="form-group">
+                    <label>Рейтинг IMDB:</label>
+                    <input type="text" class="form-control" id="imdb" required value="<%-movie.imdb%>">
+                  </div>
+                  <div class="form-group">
+                    <label>Описание:</label>
+                    <textarea class="form-control" rows="3" id="description"><%-movie.description%></textarea>
+                  </div>
+                  <div class="modal-footer justify-content-center">
+                    <button type="button" class="btn btn-outline-danger" data-dismiss="modal" id="btn-close">Отменить</button>
+                    <button type="submit" class="btn btn-primary mr-3" id="btn-save">Сохранить</button>
+                  </div>
+                </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    </script>
+    <script type="text/template" id="cardTemplate">
+        <div class="row no-gutters">
+          <div class="col-md-4">
+            <img src="<%-movie.src%>" class="card-img" alt="<%-movie.name%>">
+          </div>
+          <div class="col-md-8">
+            <div class="card-body">
+              <h5 class="card-title"><%-movie.name%></h5>
+              <p class="card-text description"><%-movie.description%></p>
+              <p class="card-text"><small class="text-muted font-weight-bold">IMDb: <%-movie.imdb%></small></p>
+              <div class="card-text"><a href="#list-<%-movie.id%>" class="more">Подробнее...</a></div>
+            </div>
+          </div>
+          <div class="card-footer">
+            <button class="btn btn-sm btn-outline-primary btn-edit"><svg class="octicon octicon-pencil" viewBox="0 0 14 16" version="1.1" width="14" height="16" aria-hidden="true"><path fill-rule="evenodd" d="M0 12v3h3l8-8-3-3-8 8zm3 2H1v-2h1v1h1v1zm10.3-9.3L12 6 9 3l1.3-1.3a.996.996 0 0 1 1.41 0l1.59 1.59c.39.39.39 1.02 0 1.41z"></path></svg></button>
+            <button class="btn btn-sm btn-outline-danger btn-delete"><svg class="octicon octicon-x" viewBox="0 0 14 18" version="1.1" width="14" height="18" aria-hidden="true"><path fill-rule="evenodd" d="M7.48 8l3.75 3.75-1.48 1.48L6 9.48l-3.75 3.75-1.48-1.48L4.52 8 .77 4.25l1.48-1.48L6 6.52l3.75-3.75 1.48 1.48L7.48 8z"></path></svg></button>
+          </div>
+        </div>
+    </script>
+    <script src="main.js"></script>
+  </body>
+</html>
